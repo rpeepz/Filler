@@ -15,8 +15,11 @@
 
 # Debug files
 *.dSYM/
+testing*
 
 # Extra
 ._*
+filler.trace
 *.DS_Store
 .vscode
+viz/
