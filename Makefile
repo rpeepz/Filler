@@ -6,7 +6,7 @@
 #    By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/01 20:19:37 by rpapagna          #+#    #+#              #
-#    Updated: 2019/07/02 06:03:20 by rpapagna         ###   ########.fr        #
+#    Updated: 2019/07/02 06:10:23 by rpapagna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ all:	$(NAME)
 
 clean:
 		@make -C libft clean
+		@rm -rf obj
 
 fclean:
 		@printf "[$(RED)$(NAME)$(NC)]\tRm binary\n" #PRINT
@@ -52,7 +53,7 @@ re: fclean all
 
 $(NAME): $(OBJ)
 		@make -C libft
-		@gcc $(CFLAGS) *.o $(ARCHIVE) -o $(AUTHOR).$(NAME)
+		@gcc $(CFLAGS) $(OBJ_PATH)/*.o $(ARCHIVE) -o $(AUTHOR).$(NAME)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
 $(OBJ_PATH):
