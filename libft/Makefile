@@ -129,7 +129,6 @@ FILES += $(addprefix $(SPRNTF_PATH)/,$(SPRINTF))
 .PHONY: clean
 
 all: $(NAME)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
 clean:
 		@printf "[$(RED)obj$(NC)]\t\tRm objects\n" #PRINT
@@ -144,6 +143,7 @@ re: fclean all
 $(NAME): $(OBJ)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
 		@ar -rcs $(NAME) $(OBJ)
+		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
 $(OBJ_PATH):
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
