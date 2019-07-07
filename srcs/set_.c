@@ -12,7 +12,7 @@
 
 #include "../includes/filler.h"
 
-static void		free_token(t_what *token, char *str, int i, int offset)
+static void		free_token(t_token *token, char *str, int i, int offset)
 {
 	if (!token->data)
 		return ;
@@ -25,7 +25,7 @@ static void		free_token(t_what *token, char *str, int i, int offset)
 	ft_memdel((void **)&token->data);
 }
 
-void			set_what(t_what *token, char *line, int i, int type)
+void			set_token(t_token *token, char *line, int i, int type)
 {
 	free_token(token, "", i, (type * 4));
 	line = ft_strchr(line, ' ') + 1;
@@ -37,7 +37,7 @@ void			set_what(t_what *token, char *line, int i, int type)
 		get_next_line(0, &line);
 		ft_strdel(&line);
 	}
-	token->data = ft_memalloc(token->tall * sizeof(char *));
+	token->data = ft_memalloc(sizeof(char *) * token->tall);
 	while (i < token->tall && get_next_line(0, &line))
 	{
 		token->data[i] = line + (type * 4);
@@ -82,23 +82,21 @@ void			set_start(t_game *filler)
 			set_players(filler, y, i_x, 1);
 		y++;
 	}
-	filler->map = (filler->me.start.x - filler->you.start.x > 0 ?
-			"Q4" : "Q1");
 	filler->start = 1;
 }
 
-void			set_where(t_game *filler)
+void			set_blocks(t_game *filler)
 {
 	int		size;
 
-	if (filler->buf_me)
-		ft_memdel((void **)&filler->buf_me);
-	if (filler->buf_you)
-		ft_memdel((void **)&filler->buf_you);
+	if (filler->me_blocks)
+		ft_memdel((void **)&filler->me_blocks);
+	if (filler->you_blocks)
+		ft_memdel((void **)&filler->you_blocks);
 	size = filler->board.size;
-	if (!(filler->buf_me = ft_memalloc(size * sizeof(t_where))) ||
-		!(filler->buf_you = ft_memalloc(size * sizeof(t_where))))
+	if (!(filler->me_blocks = ft_memalloc(sizeof(t_point) * size)) ||
+		!(filler->you_blocks = ft_memalloc(sizeof(t_point) * size)))
 		exit(1);
-	ft_bzero(filler->buf_me, size * sizeof(t_where));
-	ft_bzero(filler->buf_you, size * sizeof(t_where));
+	ft_bzero(filler->me_blocks, sizeof(t_point) * size);
+	ft_bzero(filler->you_blocks, sizeof(t_point) * size);
 }

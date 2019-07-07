@@ -15,24 +15,23 @@
 static void		begin_game(t_game filler, char **line)
 {
 	ft_strdel(line);
-	while (get_next_line(0, line) > -1)
+	while (get_next_line(0, line) > 0)
 	{
 		if (!*(line))
 			continue;
 		if (!ft_strncmp(*line, "Plateau", 7))
 		{
-			set_what(&filler.board, *line, 0, 1);
+			set_token(&filler.board, *line, 0, 1);
 			if (!filler.start)
 				set_start(&filler);
 		}
 		else if (!ft_strncmp(*line, "Piece", 5))
 		{
-			set_what(&filler.piece, *line, 0, 0);
-			set_where(&filler);
+			set_token(&filler.piece, *line, 0, 0);
+			set_blocks(&filler);
 			play_piece(filler);
 		}
-		else
-			ft_strdel(line);
+		ft_strdel(line);
 	}
 }
 
@@ -43,6 +42,7 @@ int				main(void)
 
 	ft_bzero(&filler, sizeof(t_game));
 	line = NULL;
+	filler.list = NULL;
 	filler.start = 0;
 	if (get_next_line(0, &line) > 0 && (!ft_strncmp(line, "$$$ exec p", 9)))
 	{

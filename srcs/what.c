@@ -12,30 +12,30 @@
 
 #include "../includes/filler.h"
 
-int				position_valid(t_game filler, t_where point)
+int				position_valid(t_game filler, t_point point)
 {
 	return (point.x >= 0 && point.y >= 0 &&
 			point.x < filler.board.wide && point.y < filler.board.tall);
 }
 
-void			game_array_push(t_array **alist, int data)
+void			game_array_push(t_index *list, int index, int diff)
 {
-	t_array	*new_head;
-	t_array	*old_head;
+	t_index	**real_list;
+	t_index	*new_head;
 
-	old_head = *alist;
-	new_head = ft_memalloc(sizeof(t_array));
-	new_head->diff = data;
-	new_head->priority = (*alist)->priority;
-	new_head->next = old_head;
-	*alist = new_head;
+	real_list = (t_index **)list;
+	new_head = ft_memalloc(sizeof(t_index));
+	new_head->index = index;
+	new_head->diff = diff;
+	new_head->next = *real_list;
+	*real_list = new_head;
 }
 
-void			game_array_rev(t_array **alist)
+void			game_array_rev(t_index **alist)
 {
-	t_array	*prev;
-	t_array	*cur;
-	t_array	*next;
+	t_index	*prev;
+	t_index	*cur;
+	t_index	*next;
 
 	prev = NULL;
 	cur = *alist;
@@ -49,54 +49,24 @@ void			game_array_rev(t_array **alist)
 	*alist = prev;
 }
 
-/*
-** REFACTOR WHAT_WIDE AND WHAT_TALL
-** scan col or row for existance of '*'
-** if found immediately jump to next col or row
-*/
-
-int				what_wide(t_what piece, int x, int y)
+int				what_axis(t_token piece, int x, int y, int type)
 {
-	int		temp2;
-	int		tmp;
+	int		axis;
 
-	tmp = 0;
-	temp2 = 0;
-	while (y < piece.tall)
-	{
-		x = 0;
-		while (x < piece.wide)
-		{
-			if (piece.data[y][x] == '*')
-				tmp++;
-			x++;
-		}
-		IF_THEN(temp2 < tmp, temp2 = tmp);
-		tmp = 0;
-		y++;
-	}
-	return (temp2);
-}
-
-int				what_tall(t_what piece, int x, int y)
-{
-	int		temp2;
-	int		tmp;
-
-	tmp = 0;
-	temp2 = 0;
-	while (x < piece.wide)
+	axis = 0;
+	while (x < (type == 1 ? piece.tall : piece.wide))
 	{
 		y = 0;
-		while (y < piece.tall)
+		while (y < (type == 1 ? piece.wide : piece.tall))
 		{
-			if (piece.data[y][x] == '*')
-				tmp++;
+			if (piece.data[(type == 1 ? x : y)][(type == 1 ? y : x)] == '*')
+			{
+				axis++;
+				break ;
+			}
 			y++;
 		}
-		IF_THEN(temp2 < tmp, temp2 = tmp);
-		tmp = 0;
 		x++;
 	}
-	return (temp2);
+	return (axis);
 }

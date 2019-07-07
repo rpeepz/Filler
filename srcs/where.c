@@ -12,9 +12,9 @@
 
 #include "../includes/filler.h"
 
-void			who_where(t_game *filler)
+void			whose_blocks(t_game *filler)
 {
-	t_where	point;
+	t_point	point;
 
 	filler->me_count = 0;
 	filler->you_count = 0;
@@ -25,9 +25,9 @@ void			who_where(t_game *filler)
 		while (point.x < filler->board.wide)
 		{
 			if (filler->board.data[point.y][point.x] == filler->me.id)
-				filler->buf_me[filler->me_count++] = point;
+				filler->me_blocks[filler->me_count++] = point;
 			else if (filler->board.data[point.y][point.x] == filler->you.id)
-				filler->buf_you[filler->you_count++] = point;
+				filler->you_blocks[filler->you_count++] = point;
 			point.x++;
 		}
 		point.y++;

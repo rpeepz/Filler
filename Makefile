@@ -29,6 +29,7 @@ SRCS 	=main.c\
 		diff.c\
 		play.c\
 		set_.c\
+		sort.c\
 		what.c\
 		where.c
 
@@ -51,8 +52,8 @@ fclean:
 
 re: fclean all
 
-$(NAME): $(OBJ)
-		@make -C libft
+$(NAME):$(OBJ)
+		make -C libft
 		@gcc $(CFLAGS) $(OBJ_PATH)/*.o $(ARCHIVE) -o $(AUTHOR).$(NAME)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
@@ -67,5 +68,5 @@ $(OBJ_PATH)/%.o: srcs/%.c | $(OBJ_PATH)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
 debug:
-		@gcc -g -Wall -Wextra $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME)
+		@gcc -g -Wall -Wextra $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME) -fsanitize=address
 		@printf "[$(YELLOW)debug$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT

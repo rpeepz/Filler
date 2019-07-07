@@ -26,48 +26,47 @@
 **	---------------------------------
 */
 
-typedef struct		s_where
+typedef struct		s_point
 {
 	int				x;
 	int				y;
 	int				**delta;
-}					t_where;
+}					t_point;
 
 typedef struct		s_who
 {
 	char			id;
-	t_where			start;
+	t_point			start;
 }					t_who;
 
-typedef struct		s_what
+typedef struct		s_token
 {
 	int				wide;
 	int				tall;
 	int				size;
 	char			**data;
-}					t_what;
+}					t_token;
 
-typedef struct		s_array
+typedef struct		s_index
 {
+	int				index;
 	int				diff;
-	char			*priority;
-	struct s_array	*next;
-}					t_array;
+	struct s_index	*next;
+}					t_index;
 
 typedef struct		s_game
 {
 	t_who			me;
 	t_who			you;
-	t_what			board;
-	t_what			piece;
-	t_where			target;
-	char			*map;
+	t_token			board;
+	t_token			piece;
+	t_point			target;
 	int				me_count;
 	int				you_count;
 	char			start;
-	t_where			*buf_me;
-	t_where			*buf_you;
-	t_array			*list;
+	t_point			*me_blocks;
+	t_point			*you_blocks;
+	t_index			*list;
 }					t_game;
 
 /*
@@ -76,20 +75,21 @@ typedef struct		s_game
 **	---------------------------------
 */
 
-void				set_what(t_what *token, char *line, int i, int type);
-void				set_where(t_game *filler);
+void				list_join(t_index **head, t_index **alt_list);
+void				diff_mergesort(t_index **headlist);
+void				game_array_push(t_index *list, int index, int diff);
+void				set_token(t_token *token, char *line, int i, int type);
+void				set_blocks(t_game *filler);
 void				set_start(t_game *filler);
 void				diff_piece(int *piece, t_game *filler, int i, int j);
-void				process_diff(t_game *filler, int i, int j, int z);
-void				block_find(t_game *filler, t_where anchor, int x, int y);
-void				game_array_push(t_array **alist, int data);
-void				who_where(t_game *filler);
-void				game_array_rev(t_array **alist);
+t_index				*sort_diffs(t_game *filler, int i, int j, int mode);
+void				block_find(t_game *filler, t_point anchor, int x, int y);
+void				whose_blocks(t_game *filler);
+void				game_array_rev(t_index **alist);
 int					where_anchor(t_game *filler, int x, int y);
-int					what_wide(t_what piece, int x, int y);
-int					what_tall(t_what piece, int x, int y);
-int					position_valid(t_game filler, t_where point);
-int					dist(t_where a, t_where b);
+int					what_axis(t_token piece, int x, int y, int type);
+int					position_valid(t_game filler, t_point point);
+int					dist(t_point a, t_point b);
 void				play_piece(t_game filler);
 int					ft_min(int a, int b);
 int					ft_max(int a, int b);

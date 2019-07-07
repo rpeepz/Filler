@@ -16,55 +16,71 @@ void			diff_piece(int *piece, t_game *filler, int i, int j)
 {
 	while (i < filler->me_count)
 	{
-		filler->buf_me[i].delta = ft_memalloc(sizeof(int*) * filler->you_count);
+		filler->me_blocks[i].delta =
+			ft_memalloc(sizeof(int*) * filler->you_count);
 		j = 0;
 		while (j < filler->you_count)
 		{
-			filler->buf_me[i].delta[j] = ft_memalloc(sizeof(int) * 2);
-			filler->buf_me[i].delta[j][0] =
-				ABS(filler->buf_me[i].x - filler->buf_you[j].x) - piece[0];
-			filler->buf_me[i].delta[j][1] =
-				ABS(filler->buf_me[i].y - filler->buf_you[j].y) - piece[1];
+			filler->me_blocks[i].delta[j] = ft_memalloc(sizeof(int) * 2);
+			filler->me_blocks[i].delta[j][0] =
+				ABS(filler->me_blocks[i].x -
+					filler->you_blocks[j].x) - piece[0];
+			filler->me_blocks[i].delta[j][1] =
+				ABS(filler->me_blocks[i].y -
+					filler->you_blocks[j].y) - piece[1];
 			j++;
 		}
 		i++;
 	}
 }
 
-void			process_diff(t_game *filler, int i, int j, int z)
+void			game_array_init(t_index *list, int index, int diff)
 {
-	int		tmp;
+	if (!list)
+	{
+		list = ft_memalloc(sizeof(t_index));
+		list->index = index;
+		list->diff = diff;
+		list->next = NULL;
+	}
+	else
+	{
+		game_array_push((t_index*)&list, index, diff);
+	}
+}
 
-	tmp = (z == 1 ? filler->board.tall : filler->board.wide);
+t_index			*sort_diffs(t_game *filler, int i, int j, int mode)
+{
+	int			min_diff;
+	int			alt_diff;
+	t_index		*alt_list;
+
+	alt_list = NULL;
+	min_diff = (mode == 1 ? filler->board.tall : filler->board.wide);
+	alt_diff = (mode == 1 ? filler->board.wide : filler->board.tall);
 	while (i < filler->me_count)
 	{
 		j = 0;
 		while (j < filler->you_count)
 		{
-			if (filler->buf_me[i].delta[j][z] <= tmp)
-			{
-				tmp = filler->buf_me[i].delta[j][z];
-				if (!filler->list)
-				{
-					filler->list = ft_memalloc(sizeof(t_array));
-					filler->list->diff = i;
-					filler->list->priority = (z == 1 ? "tall" : "wide");
-					filler->list->next = NULL;
-				}
-				else
-					game_array_push(&filler->list, i);
-			}
+			if (filler->me_blocks[i].delta[j][mode] < min_diff)
+				min_diff = filler->me_blocks[i].delta[j][mode];
+			if (filler->me_blocks[i].delta[j][ABS(mode - 1)] < alt_diff)
+				min_diff = filler->me_blocks[i].delta[j][mode];
 			j++;
 		}
+		game_array_init(filler->list, i, min_diff);
+		game_array_init(alt_list, i, alt_diff);
 		i++;
 	}
+	return (alt_list);
 }
 
 /*
 ** POTENTIAL REWORK FOR WRAPPING IN BLOCK FIND
 */
 
-void			block_find(t_game *filler, t_where anchor, int x, int y)
+void			block_find(t_game *filler, t_point anchor, int x, int y)
 {
 	int		i;
 
