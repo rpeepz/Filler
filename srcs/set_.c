@@ -14,6 +14,7 @@
 
 /*
 **	helper function for set token
+**	free info in token
 */
 
 static void		free_token(t_token *token, char *str, int i, int offset)
