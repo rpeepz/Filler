@@ -12,6 +12,10 @@
 
 #include "../includes/filler.h"
 
+/*
+**	helper function for set token
+*/
+
 static void		free_token(t_token *token, char *str, int i, int offset)
 {
 	if (!token->data)
@@ -24,6 +28,10 @@ static void		free_token(t_token *token, char *str, int i, int offset)
 	}
 	ft_memdel((void **)&token->data);
 }
+
+/*
+**	setting board data or piece data
+*/
 
 void			set_token(t_token *token, char *line, int i, int type)
 {
@@ -45,6 +53,10 @@ void			set_token(t_token *token, char *line, int i, int type)
 	}
 }
 
+/*
+**	helper function for set start
+*/
+
 static void		set_players(t_game *filler, int y, int x, char id)
 {
 	if (id)
@@ -63,40 +75,28 @@ static void		set_players(t_game *filler, int y, int x, char id)
 	}
 }
 
+/*
+**	setting start location for each player
+*/
+
 void			set_start(t_game *filler)
 {
 	int		y;
-	int		i_x;
-	int		i_o;
+	int		index_x;
+	int		index_o;
 
 	y = 0;
-	i_o = 0;
-	i_x = 0;
+	index_o = -1;
+	index_x = -1;
 	while (y < filler->board.tall)
 	{
-		i_o = (i_o == 0 ? ft_strchri(filler->board.data[y], 'O') : -1);
-		i_x = (i_x == 0 ? ft_strchri(filler->board.data[y], 'X') : -1);
-		if (i_o > 0)
-			set_players(filler, y, i_o, 0);
-		else if (i_x > 0)
-			set_players(filler, y, i_x, 1);
+		index_o = (index_o < 0 ? ft_strchri(filler->board.data[y], 'O') : -1);
+		index_x = (index_x < 0 ? ft_strchri(filler->board.data[y], 'X') : -1);
+		if (index_o >= 0)
+			set_players(filler, y, index_o, 0);
+		else if (index_x >= 0)
+			set_players(filler, y, index_x, 1);
 		y++;
 	}
 	filler->start = 1;
-}
-
-void			set_blocks(t_game *filler)
-{
-	int		size;
-
-	if (filler->me_blocks)
-		ft_memdel((void **)&filler->me_blocks);
-	if (filler->you_blocks)
-		ft_memdel((void **)&filler->you_blocks);
-	size = filler->board.size;
-	if (!(filler->me_blocks = ft_memalloc(sizeof(t_point) * size)) ||
-		!(filler->you_blocks = ft_memalloc(sizeof(t_point) * size)))
-		exit(1);
-	ft_bzero(filler->me_blocks, sizeof(t_point) * size);
-	ft_bzero(filler->you_blocks, sizeof(t_point) * size);
 }
