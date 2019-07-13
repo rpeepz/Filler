@@ -26,12 +26,9 @@ MAG		=\033[0;35m
 NC		=\033[0m
 
 SRCS 	=main.c\
-		diff.c\
 		play.c\
 		set_.c\
-		sort.c\
-		what.c\
-		where.c
+		one_.c
 
 OBJ		= $(addprefix $(OBJ_PATH)/,$(SRCS:.c=.o))
 
