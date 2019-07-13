@@ -15,7 +15,7 @@
 /*
 **	for each block filled by either player assigns x,y value
 **	to t_point pointer at an increasing index, which totals max spots taken
-**	by either player.
+**	by either player and stores in me/you count.
 */
 
 static void		whose_blocks(t_game *filler)
@@ -63,29 +63,32 @@ static void		set_blocks(t_game *filler)
 }
 
 /*
-**	find max filled hight or width of given token.
+**	find max filled hight or width of given token and stores in toke->max[].
 */
 
-static void		set_max(t_token *token, int x, int y, int type)
+static void		set_max(t_token *token, int type, int mode)
 {
-	int		axis;
+	int		x;
+	int		y;
 
-	axis = 0;
-	while (x < (type == 1 ? token->tall : token->wide))
+	x = 0;
+	y = 0;
+	token->max[mode] = 0;
+	while (x < (mode == 1 ? token->tall : token->wide))
 	{
 		y = 0;
-		while (y < (type == 1 ? token->wide : token->tall))
+		while (y < (mode == 1 ? token->wide : token->tall))
 		{
-			if (token->data[(type == 1 ? x : y)][(type == 1 ? y : x)] == '*')
+			if (token->data[(mode == 1 ? x : y)][(mode == 1 ? y : x)] ==
+				(!type ? '*' : type))
 			{
-				axis++;
+				token->max[mode]++;
 				break ;
 			}
 			y++;
 		}
 		x++;
 	}
-	token->max[type] = axis;
 }
 
 /*
@@ -94,7 +97,7 @@ static void		set_max(t_token *token, int x, int y, int type)
 **	calls play piece
 */
 
-static void		begin_game(t_game filler, char **line)
+static void		begin_game(t_game filler, t_score *score_list, char **line)
 {
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
@@ -110,11 +113,12 @@ static void		begin_game(t_game filler, char **line)
 		else if (!ft_strncmp(*line, "Piece", 5))
 		{
 			set_token(&filler.piece, *line, 0, 0);
-			set_max(&filler.piece, 0, 0, 0);
-			set_max(&filler.piece, 0, 0, 1);
-			set_max(&filler.board, 0, 0, 0);
-			set_max(&filler.board, 0, 0, 1);
+			set_max(&filler.piece, 0, 0);
+			set_max(&filler.piece, 0, 1);
+			set_max(&filler.board, (int)filler.me.id, 0);
+			set_max(&filler.board, (int)filler.me.id, 1);
 			set_blocks(&filler);
+			score_list_init(&filler, score_list, 0);
 			play_piece(filler);
 		}
 		ft_strdel(line);
@@ -130,8 +134,9 @@ static void		begin_game(t_game filler, char **line)
 
 int				main(void)
 {
-	t_game	filler;
 	char	*line;
+	t_score	*score_list;
+	t_game	filler;
 
 	line = NULL;
 	if (get_next_line(0, &line) > 0 && (!ft_strncmp(line, "$$$ exec p", 9)))
@@ -140,9 +145,10 @@ int				main(void)
 		filler.me_blocks = NULL;
 		filler.you_blocks = NULL;
 		filler.list = NULL;
+		score_list = NULL;
 		filler.me.id = (line[10] == '1' ? 'O' : 'X');
 		filler.you.id = (line[10] == '1' ? 'X' : 'O');
-		begin_game(filler, &line);
+		begin_game(filler, score_list, &line);
 	}
 	else
 		return (1);
