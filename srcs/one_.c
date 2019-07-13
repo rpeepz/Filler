@@ -16,7 +16,7 @@
 **	find the diff of how much is covered and add to score
 */
 
-static int		scan_diff(t_game *filler, t_point point, int to_match, int mode)
+static int		scan_diff(t_game *filler, int to_match, int mode)
 {
 	int		i;
 	int		tmp;
@@ -105,8 +105,8 @@ static void		next_nodes(t_try **list)
 	t_try	*new;
 
 	cur = *list;
-	cur->next = new;
 	new = ft_memalloc(sizeof(t_try));
+	cur->next = new;
 	new->block = cur->block;
 	new->score = cur->score;
 	cur = cur->next;
@@ -120,7 +120,6 @@ static void		next_nodes(t_try **list)
 void			get_phase_one(t_game *filler, int to_match, int mode)
 {
 	int		anc_count;
-	int		ret;
 	t_point	point;
 	t_try	*list;
 
@@ -133,9 +132,9 @@ void			get_phase_one(t_game *filler, int to_match, int mode)
 	{
 //			if ret is 1 then move to next node in list
 //			if ret is 0 then skip adding it to the list
-		if (scan_diff(filler, point, to_match, mode))
+		if (scan_diff(filler, to_match, mode))
 			next_nodes(&filler->scores->scores);
-		shift_anchor();
+//		shift_anchor();
 		anc_count++;
 	}
 	filler->scores->scores = list;
