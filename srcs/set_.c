@@ -101,3 +101,21 @@ void			set_start(t_game *filler)
 	}
 	filler->start = 1;
 }
+
+/*
+**	allocate list of scores for determining best play spot
+*/
+
+void			score_list_init(t_game *filler, t_score *score_list, int i)
+{
+	t_score		*list;
+
+	list = ft_memalloc(sizeof(t_score));
+	list->board_point = filler->me_blocks[i];
+	list->target = (t_point){0, 0};
+	list->scores = ft_memalloc(sizeof(t_try));
+	list->scores->score = INT32_MAX;
+	list->scores->next = NULL;
+	list->next = score_list;
+	filler->scores = list;
+}
