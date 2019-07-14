@@ -3,53 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   one_.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpapagna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/12 15:01:35 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 18:28:08 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
 
 /*
-**	find the diff of how much is covered and add to score
+**	find initial state of anchor and number of blocks
 */
 
-static int		scan_diff(t_game *filler, int to_match, int mode)
+static void		piece_anchor(t_try *list, t_token piece, t_point point, int b)
 {
-	int		i;
-	int		tmp;
-
-	i = -1;
-	while (++i < filler->scores->scores->block_count)
+	while (point.y < piece.tall)
 	{
-		tmp = !mode ?
-		filler->scores->board_point.x + filler->scores->scores->block[i].x :
-		filler->scores->board_point.y + filler->scores->scores->block[i].y;
-		if ((tmp > (!mode ? filler->board.wide : filler->board.tall) || tmp < 0)
-			|| ((!mode ? filler->board.data[filler->scores->board_point.y][tmp]
-			: filler->board.data[tmp][filler->scores->board_point.x]) ==
-			filler->you.id) || (i != 0 && (!mode ?
-			filler->board.data[filler->scores->board_point.y][tmp]
-			: filler->board.data[tmp][filler->scores->board_point.x]) ==
-			filler->me.id))
-			return (0);
-		tmp = ABS(!mode ? filler->scores->scores->block[i].x :
-			filler->scores->scores->block[i].y) + filler->board.max[mode];
-		if (to_match - tmp < filler->scores->scores->score)
-			filler->scores->scores->score = to_match - tmp;
+		point.x = 0;
+		while (point.x < piece.wide)
+		{
+			if (piece.data[point.y][point.x] == '*')
+			{
+				if (!b)
+					list->anchor = point;
+				b++;
+			}
+			point.x++;
+		}
+		point.y++;
 	}
-	return (1);
+	list->block_count = b;
 }
 
 /*
-**	find initial state all blocks
+**	find state all blocks in relation to anchor
 */
 
 static void		piece_blocks(t_game *filler, t_point point, int count, int i)
 {
-	filler->scores->scores->block = ft_memalloc(sizeof(t_point) * count);
+	filler->scores->rotation->block = ft_memalloc(sizeof(t_point) * count);
 	while (point.y < filler->piece.tall)
 	{
 		point.x = 0;
@@ -57,42 +50,16 @@ static void		piece_blocks(t_game *filler, t_point point, int count, int i)
 		{
 			if (filler->piece.data[point.y][point.x] == '*')
 			{
-				filler->scores->scores->block[i].x = point.x -
-				filler->scores->scores->anchor.x;
-				filler->scores->scores->block[i].y = point.y -
-				filler->scores->scores->anchor.y;
+				filler->scores->rotation->block[i].x = point.x -
+				filler->scores->rotation->anchor.x;
+				filler->scores->rotation->block[i].y = point.y -
+				filler->scores->rotation->anchor.y;
 				i++;
 			}
 			point.x++;
 		}
 		point.y++;
 	}
-}
-
-/*
-**	find initial state of anchor and number of blocks
-*/
-
-static void		piece_anchor(t_game *filler, t_point point, int block)
-{
-	while (point.y < filler->piece.tall)
-	{
-		point.x = 0;
-		while (point.x < filler->piece.wide)
-		{
-			if (filler->piece.data[point.y][point.x] == '*')
-			{
-				if (!block)
-				{
-					filler->scores->scores->anchor = point;
-				}
-				block++;
-			}
-			point.x++;
-		}
-		point.y++;
-	}
-	filler->scores->scores->block_count = block;
 }
 
 /*
@@ -107,14 +74,49 @@ static void		next_nodes(t_try **list)
 	cur = *list;
 	new = ft_memalloc(sizeof(t_try));
 	cur->next = new;
-	new->block = cur->block;
 	new->score = cur->score;
+	new->block_count = cur->block_count;
+	new->block = cur->block;
+	new->next = NULL;
 	cur = cur->next;
 }
 
 /*
+**	find the diff of how much is covered and add to score
+*/
+
+static int		scan_diff(t_game *filler, int to_match, int mode)
+{
+	int		i;
+	int		tmp;
+
+	i = -1;
+	while (++i < filler->scores->rotation->block_count)
+	{
+		tmp = !mode ?
+		filler->scores->board_point.x + filler->scores->rotation->block[i].x :
+		filler->scores->board_point.y + filler->scores->rotation->block[i].y;
+		if ((tmp > (!mode ? filler->board.wide : filler->board.tall) || tmp < 0)
+			|| ((!mode ? filler->board.data[filler->scores->board_point.y][tmp]
+			: filler->board.data[tmp][filler->scores->board_point.x]) ==
+			filler->you.id) || (i != 0 && (!mode ?
+			filler->board.data[filler->scores->board_point.y][tmp]
+			: filler->board.data[tmp][filler->scores->board_point.x]) ==
+			filler->me.id))
+			return (0);
+		tmp = ABS(!mode ? filler->scores->rotation->block[i].x :
+			filler->scores->rotation->block[i].y) + filler->board.max[mode];
+		if (to_match - tmp < filler->scores->rotation->score)
+			filler->scores->rotation->score = to_match - tmp;
+	}
+	return (1);
+}
+
+/*
 **	make a list of scores based on expanded coverage across
-**	the dimension specified by the max[] of the piece given
+**	the dimension specified by the max[] of the piece given.
+**	set and change anchor to next block.
+**	update best score for current t_score.
 */
 
 void			get_phase_one(t_game *filler, int to_match, int mode)
@@ -125,17 +127,18 @@ void			get_phase_one(t_game *filler, int to_match, int mode)
 
 	anc_count = 0;
 	point = (t_point){0, 0};
-	list = filler->scores->scores;
-	piece_anchor(filler, point, 0);
-	piece_blocks(filler, point, filler->scores->scores->block_count, 0);
-	while (anc_count < filler->scores->scores->block_count)
+	list = filler->scores->rotation;
+	piece_anchor(list, filler->piece, point, 0);
+	while (++anc_count < list->block_count)
 	{
-//			if ret is 1 then move to next node in list
-//			if ret is 0 then skip adding it to the list
+		piece_blocks(filler, point, list->block_count, 0);
 		if (scan_diff(filler, to_match, mode))
-			next_nodes(&filler->scores->scores);
-//		shift_anchor();
-		anc_count++;
+			next_nodes(&list);
+		filler->scores->rotation->anchor.x =
+			filler->scores->rotation->anchor.x + list->block[anc_count].x;
+		filler->scores->rotation->anchor.y =
+			filler->scores->rotation->anchor.y + list->block[anc_count].y;
+		if (filler->scores->rotation->score < filler->scores->score)
+			filler->scores->score = filler->scores->rotation->score;
 	}
-	filler->scores->scores = list;
 }
