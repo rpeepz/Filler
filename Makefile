@@ -28,6 +28,7 @@ NC		=\033[0m
 SRCS 	=main.c\
 		play.c\
 		set_.c\
+		sort.c\
 		one_.c
 
 OBJ		= $(addprefix $(OBJ_PATH)/,$(SRCS:.c=.o))
