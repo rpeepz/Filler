@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/02 05:56:31 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 19:53:56 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static void		set_max(t_token *token, int type, int mode)
 **	calls play piece
 */
 
-static void		begin_game(t_game filler, t_score *score_list, char **line)
+static void		begin_game(t_game filler, char **line)
 {
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
@@ -118,7 +118,6 @@ static void		begin_game(t_game filler, t_score *score_list, char **line)
 			set_max(&filler.board, (int)filler.me.id, 0);
 			set_max(&filler.board, (int)filler.me.id, 1);
 			set_blocks(&filler);
-			score_list_init(&filler, score_list, 0);
 			play_piece(filler);
 		}
 		ft_strdel(line);
@@ -135,7 +134,6 @@ static void		begin_game(t_game filler, t_score *score_list, char **line)
 int				main(void)
 {
 	char	*line;
-	t_score	*score_list;
 	t_game	filler;
 
 	line = NULL;
@@ -145,10 +143,9 @@ int				main(void)
 		filler.me_blocks = NULL;
 		filler.you_blocks = NULL;
 		filler.list = NULL;
-		score_list = NULL;
 		filler.me.id = (line[10] == '1' ? 'O' : 'X');
 		filler.you.id = (line[10] == '1' ? 'X' : 'O');
-		begin_game(filler, score_list, &line);
+		begin_game(filler, &line);
 	}
 	else
 		return (1);

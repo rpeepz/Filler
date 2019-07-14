@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 18:32:27 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 21:41:39 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,21 +141,31 @@ t_point			solve(t_game *filler, int x, int y, int overlap)
 **	}
 */
 
-/*
-**	sets trigger to indicate first placements to early game.
-**	if spanned width or height is less than half
-**	
-*/
-
-static void		set_list(t_game *filler, int to_match, int i, int mode)
+static void		set_list(t_game *filler, int to_match, int mode, int i)
 {
-	filler->scores->board_point = filler->me_blocks[i];
-	get_phase_one(filler, to_match, mode);
-//	filler->scores->target =
-//	filler->scores->score =
+	t_score		*list;
+
+	score_list_init(&list, filler->me_blocks[0]);
+	filler->scores = list;
+	while (i < filler->me_count)
+	{
+		do_phase(filler, list, to_match, mode);
+		if (list->score < INT32_MAX)
+		{
+			list = list->next;
+			score_list_init(&list, filler->me_blocks[i]);
+		}
+		i++;
+	}
+	filler->scores = sort_scores(filler->scores);
 }
 
-int				phase_one(t_game filler, int mode, int ch, int i)
+/*
+**	sets trigger to indicate first placements to early game.
+**	sets and sorts list of scores for valid block placements.
+*/
+
+int				phase_one(t_game filler, int mode, int ch)
 {
 	int		max;
 	while (++ch < 2)
@@ -168,11 +178,17 @@ int				phase_one(t_game filler, int mode, int ch, int i)
 	mode = filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1;
 	max = filler.board.max[mode] + filler.piece.max[mode];
 	ch = -1;
-	while (i < filler.me_count)
+	set_list(&filler, max, mode, 0);
+/*	Testing BEGIN
+	printf("BC: %d\n", filler.scores->rotation->block_count);
+	while (filler.scores->rotation)
 	{
-		set_list(&filler, max, i, mode);
-		i++;
+		printf("BEST: %d\n", filler.scores->score);
+		printf("SCORE: %d\n", filler.scores->rotation->score);
+		filler.scores->rotation = filler.scores->rotation->next;
 	}
+//	Testing END
+*/
 	return (0);
 }
 
@@ -187,7 +203,7 @@ void			play_piece(t_game filler)
 	int				decision;
 
 	decision = 0;
-	decision |= phase_one(filler, 0, -1, 0);
+	decision |= phase_one(filler, 0, -1);
 //	diff_piece(filler.piece.max, &filler, 0, 0);
 //	alt_list = sort_diffs(&filler, 0, 0,
 //		filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1);

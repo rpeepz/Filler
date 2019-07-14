@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 17:46:43 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 21:19:17 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,18 +106,18 @@ void			set_start(t_game *filler)
 **	allocate list of scores for determining best play spot
 */
 
-void			score_list_init(t_game *filler, t_score *score_list, int i)
+void			score_list_init(t_score **cur, t_point point)
 {
 	t_score		*list;
 
 	list = ft_memalloc(sizeof(t_score));
 	list->score = INT32_MAX;
-	list->board_point = filler->me_blocks[i];
+	list->board_point = point;
 	list->target = (t_point){0, 0};
 	list->rotation = ft_memalloc(sizeof(t_try));
 	list->rotation->score = INT32_MAX;
 	list->rotation->block = NULL;
 	list->rotation->next = NULL;
-	list->next = score_list;
-	filler->scores = list;
+	list->next = NULL;
+	*cur = list;
 }
