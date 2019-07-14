@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/02 05:34:14 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 18:32:31 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ typedef struct		s_try
 	int				score;
 	int				block_count;
 	t_point			anchor;
-	t_point			new_anc;
 	t_point			*block;
 	struct s_try	*next;
 }					t_try;
@@ -71,9 +70,8 @@ typedef struct		s_score
 {
 	int				score;
 	t_point			board_point;
-	t_point			piece_point;
 	t_point			target;
-	t_try			*scores;
+	t_try			*rotation;
 	struct s_score	*next;
 }					t_score;
 
