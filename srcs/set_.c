@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/06/24 21:30:01 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 17:46:43 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,13 @@ void			score_list_init(t_game *filler, t_score *score_list, int i)
 	t_score		*list;
 
 	list = ft_memalloc(sizeof(t_score));
+	list->score = INT32_MAX;
 	list->board_point = filler->me_blocks[i];
 	list->target = (t_point){0, 0};
-	list->scores = ft_memalloc(sizeof(t_try));
-	list->scores->score = INT32_MAX;
-	list->scores->next = NULL;
+	list->rotation = ft_memalloc(sizeof(t_try));
+	list->rotation->score = INT32_MAX;
+	list->rotation->block = NULL;
+	list->rotation->next = NULL;
 	list->next = score_list;
 	filler->scores = list;
 }
