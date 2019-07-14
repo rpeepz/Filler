@@ -6,12 +6,12 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/02 06:11:48 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 18:32:27 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
-
+/*
 int				overlap(t_game filler, t_point spot, t_point to_place, int i)
 {
 	if (spot.y + to_place.y > filler.board.tall ||
@@ -27,25 +27,25 @@ int				overlap(t_game filler, t_point spot, t_point to_place, int i)
 		return (0);
 }
 
-int				diff_blocks(t_game game, t_point anch, int blocks, t_index *pl)
+int				diff_blocks(t_game game, int blocks, int i)
 {
-	int		i;
+	int		block;
 	int		count;
 	t_point	piece_piece;
 	t_point best_spot;
 
-	best_spot.y = game.me_blocks[pl->index].y;
-	best_spot.x = game.me_blocks[pl->index].x;
+	best_spot.y = game.me_blocks[i].y;
+	best_spot.x = game.me_blocks[i].x;
 	count = 0;
-	i = 0;
-	while (i < blocks)
+	block = 0;
+	while (block < blocks)
 	{
-		piece_piece.y = game.target.delta[i][0];
-		piece_piece.x = game.target.delta[i][1];
+		piece_piece.x = game.target.delta[i][0];
+		piece_piece.y = game.target.delta[i][1];
 		count = overlap(game, best_spot, piece_piece, count);
 		if (count > 1 || count < 0)
 			return (1);
-		i++;
+		block++;
 	}
 	return (0);
 }
@@ -63,68 +63,71 @@ t_point			solve(t_game *filler, int x, int y, int overlap)
 	block_find(filler, anchor, 0, 0);
 	while (filler->list)
 	{
-		x =
-		filler->me_blocks[filler->list->index].x + filler->target.delta[i][0];
-		y =
-		filler->me_blocks[filler->list->index].y + filler->target.delta[i][1];
-		if (overlap > 1 || y < 0 || y > filler->board.tall ||
-							x < 0 || x > filler->board.wide ||
-			filler->board.data[y][x] == filler->you.id)
-		{
-			i = 0;
-			overlap = 0;
+		if (diff_blocks(*filler, blocks, filler->list->index))
 			filler->list = filler->list->next;
+		else
+		{
 			if (!filler->list)
 			{
 				filler->target.x = 0;
 				filler->target.y = 0;
 				return (filler->target);
 			}
-			continue ;
-		}
-		if (filler->board.data[y][x] == filler->me.id)
-			overlap++;
-		i++;
-		if (i == blocks)
-		{
-			if (overlap == 1)
-			{
-				filler->target.y = filler->me_blocks[filler->list->index].y - anchor.y;
-				filler->target.x = filler->me_blocks[filler->list->index].x - anchor.x;
-				return (filler->target);
-			}
-			else
-			{
-				filler->target.x = 0;
-				filler->target.y = 0;
-				break ;
-			}
+			break ;
 		}
 	}
+	filler->target.x = filler->me_blocks[filler->list->index].x - anchor.x;
+	filler->target.y = filler->me_blocks[filler->list->index].y - anchor.y;
 	return (filler->target);
 }
+*/
 
-/*
-**	printf("X: %d %d %d\n", filler->target.x, filler->buf_me[filler->list->diff].x, anchor.x);
-**	printf("Y: %d %d %d\n", filler->target.y, filler->buf_me[filler->list->diff].y, anchor.y);
-**	return (filler->target);
-**	while (filler->list)
+/*	while (filler->list)
 **	{
-**		if (diff_blocks(*filler, anchor, blocks, filler->list))
-**			filler->list = filler->list->next;
-**		else
+**		x =
+**		filler->me_blocks[filler->list->index].x + filler->target.delta[i][0];
+**		y =
+**		filler->me_blocks[filler->list->index].y + filler->target.delta[i][1];
+**		if (overlap > 1 || y < 0 || y > filler->board.tall ||
+**							x < 0 || x > filler->board.wide ||
+**			filler->board.data[y][x] == filler->you.id)
 **		{
+**			i = 0;
+**			overlap = 0;
+**			filler->list = filler->list->next;
 **			if (!filler->list)
 **			{
 **				filler->target.x = 0;
 **				filler->target.y = 0;
 **				return (filler->target);
 **			}
-**			break ;
+**			continue ;
+**		}
+**		if (filler->board.data[y][x] == filler->me.id)
+**			overlap++;
+**		i++;
+**		if (i == blocks)
+**		{
+**			if (overlap == 1)
+**			{
+**				filler->target.y = filler->me_blocks[filler->list->index].y - anchor.y;
+**				filler->target.x = filler->me_blocks[filler->list->index].x - anchor.x;
+**				return (filler->target);
+**			}
+**			else
+**			{
+**				filler->target.x = 0;
+**				filler->target.y = 0;
+**				break ;
+**			}
 **		}
 **	}
-**	filler->target.x = filler->buf_me[filler->list->diff].x - anchor.x;
-**	filler->target.y = filler->buf_me[filler->list->diff].y - anchor.y;
+**	return (filler->target);
+*/
+
+/*
+**	printf("X: %d %d %d\n", filler->target.x, filler->buf_me[filler->list->diff].x, anchor.x);
+**	printf("Y: %d %d %d\n", filler->target.y, filler->buf_me[filler->list->diff].y, anchor.y);
 **	return (filler->target);
 */
 
@@ -138,21 +141,70 @@ t_point			solve(t_game *filler, int x, int y, int overlap)
 **	}
 */
 
+/*
+**	sets trigger to indicate first placements to early game.
+**	if spanned width or height is less than half
+**	
+*/
+
+static void		set_list(t_game *filler, int to_match, int i, int mode)
+{
+	filler->scores->board_point = filler->me_blocks[i];
+	get_phase_one(filler, to_match, mode);
+//	filler->scores->target =
+//	filler->scores->score =
+}
+
+int				phase_one(t_game filler, int mode, int ch, int i)
+{
+	int		max;
+	while (++ch < 2)
+	{
+		if ((!ch ? filler.board.max[ch] >= (filler.board.wide * 66) / 100 :
+				filler.board.max[ch] >= (filler.board.tall * 66) / 100) ||
+			filler.me_count > (filler.board.size / 8))
+			return (END_PHASE_1);
+	}
+	mode = filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1;
+	max = filler.board.max[mode] + filler.piece.max[mode];
+	ch = -1;
+	while (i < filler.me_count)
+	{
+		set_list(&filler, max, i, mode);
+		i++;
+	}
+	return (0);
+}
+
+/*
+**	make decision where to place in three phase process.
+*/
+
 void			play_piece(t_game filler)
 {
-	int				piece[2];
 	t_point			target;
-	t_index			*alt_list;
+//	t_index			*alt_list;
+	int				decision;
 
-	whose_blocks(&filler);
-	piece[0] = what_axis(filler.piece, 0, 0, 0);
-	piece[1] = what_axis(filler.piece, 0, 0, 1);
-	diff_piece(piece, &filler, 0, 0);
-	alt_list = sort_diffs(&filler, 0, 0, piece[0] >= piece[1] ? 0 : 1);
-	diff_mergesort(&filler.list);
-	diff_mergesort(&alt_list);
-	list_join(&filler.list, &alt_list);
-	target = solve(&filler, 0, 0, 0);
+	decision = 0;
+	decision |= phase_one(filler, 0, -1, 0);
+//	diff_piece(filler.piece.max, &filler, 0, 0);
+//	alt_list = sort_diffs(&filler, 0, 0,
+//		filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1);
+//	diff_mergesort(&filler.list);
+//	diff_mergesort(&alt_list);
+//	list_join(&filler.list, &alt_list);
+//	while (filler.list)
+//	while (alt_list)
+//	{
+//		ft_putnbr(filler.list->index);
+//		ft_putnbr(alt_list->index);
+//		write(1, ", ", 2);
+//		filler.list = filler.list->next;
+//		alt_list = alt_list->next;
+//	}
+//	write(1, "\n", 1);
+//	target = solve(&filler, 0, 0, 0);
 //	free_shit(&filler);
 	ft_putnbr(target.y);
 	ft_putchar(' ');
