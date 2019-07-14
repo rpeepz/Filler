@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 18:32:31 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/13 18:58:50 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,13 @@ typedef struct		s_game
 	int				me_count;
 	int				you_count;
 	t_point			target;
-	t_who			me;
-	t_who			you;
 	t_point			*me_blocks;
 	t_point			*you_blocks;
+	t_who			me;
+	t_who			you;
+	t_index			*list;
 	t_token			board;
 	t_token			piece;
-	t_index			*list;
 	t_score			*scores;
 }					t_game;
 
