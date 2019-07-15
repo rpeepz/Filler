@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 21:41:30 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/14 21:15:08 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,50 +65,45 @@ static void		piece_blocks(t_game *filler, t_try *list, t_point point, int n)
 	}
 }
 
-/*
-**	move to the next position in the list
-*/
-
-static void		next_nodes(t_try **list, int block_count)
+static t_point	wrapper(t_point point, int wide, int tall)
 {
-	t_try	*new;
-
-	new = ft_memalloc(sizeof(t_try));
-	new->score = INT32_MAX;
-	new->block_count = block_count;
-	new->block = NULL;
-	new->next = NULL;
-	(*list)->next = new;
-	*list = (*list)->next;
-
+	if (point.x >= wide)
+		point.x = point.x - wide;
+	if (point.y >= tall)
+		point.y = point.y - tall;
+	if (point.x < 0)
+		point.x = wide + point.x;
+	if (point.y < 0)
+		point.y = tall + point.y;
+	return (point);
 }
 
 /*
 **	find the diff of how much is covered and add to score
 */
 
-static int		scan_diff(t_game *filler, t_try *cur, int max, int mode)
+static int		scan_diff(t_game *filler, t_score *scores, int *mo, int anc)
 {
 	int		i;
-	int		tmp;
+	int		point;
+	t_point	tmp;
 
 	i = -1;
-	while (++i < filler->scores->rotation->block_count)
+	while (++i < scores->rotation->block_count)
 	{
-		tmp = !mode ?
-		filler->scores->board_point.x + filler->scores->rotation->block[i].x :
-		filler->scores->board_point.y + filler->scores->rotation->block[i].y;
-		if ((tmp > (!mode ? filler->board.wide : filler->board.tall) || tmp < 0)
-			|| ((!mode ? filler->board.data[filler->scores->board_point.y][tmp]
-			: filler->board.data[tmp][filler->scores->board_point.x]) ==
-			filler->you.id) || (i != 0 && (!mode ?
-			filler->board.data[filler->scores->board_point.y][tmp]
-			: filler->board.data[tmp][filler->scores->board_point.x]) ==
-			filler->me.id))
+		tmp.x = scores->board_point.x + scores->rotation->block[i].x;
+		tmp.y = scores->board_point.y + scores->rotation->block[i].y;
+		if (tmp.x >= filler->board.wide || tmp.y >= filler->board.tall
+			|| tmp.x < 0 || tmp.y < 0)
+			tmp = wrapper(tmp, filler->board.wide, filler->board.tall);
+		if (filler->board.data[tmp.y][tmp.x] == filler->you.id || (i != anc &&
+			filler->board.data[tmp.y][tmp.x] == filler->me.id))
 			return (0);
-		tmp = ABS(!mode ? filler->scores->rotation->block[i].x :
-			filler->scores->rotation->block[i].y) + filler->board.max[mode];
-		cur->score = max - tmp;
+		!mo[1] ?
+		(point = ABS(scores->rotation->block[i].x) + filler->board.max[mo[1]]) :
+		(point = ABS(scores->rotation->block[i].y) + filler->board.max[mo[1]]);
+		if (mo[0] - point < mo[2])
+			mo[2] = mo[0] - point;
 	}
 	return (1);
 }
@@ -120,29 +115,30 @@ static int		scan_diff(t_game *filler, t_try *cur, int max, int mode)
 **	update best score for current t_score.
 */
 
-void			do_phase(t_game *filler, t_score *scores, int max, int mode)
+void			do_phase(t_game *filler, t_score *scores, int *mo)
 {
-	int		ret;
-	int		block_count;
 	int		anc_count;
 	t_point	point;
-	t_try	*list;
 
 	anc_count = 0;
 	point = (t_point){0, 0};
-	list = scores->rotation;
-	block_count = list->block_count;
-	piece_anchor(list, filler->piece, point, 0);
-	while (++anc_count < block_count)
+	piece_anchor(scores->rotation, filler->piece, point, 0);
+	while (++anc_count < scores->rotation->block_count)
 	{
-		piece_blocks(filler, list, point, block_count);
-		ret = scan_diff(filler, list, max, mode);
-		list->anchor.x = list->anchor.x + list->block[anc_count].x;
-		list->anchor.y = list->anchor.y + list->block[anc_count].y;
-		if (list->score < scores->score)
-			scores->score = list->score;
-		if (ret)
-			next_nodes(&list, block_count);
+		piece_blocks(filler, scores->rotation, point,
+						scores->rotation->block_count);
+		if (scan_diff(filler, scores, mo, anc_count - 1))
+			if (mo[2] < scores->score)
+			{
+				scores->score = mo[2];
+				scores->rotation->target.x = scores->board_point.x -
+				scores->rotation->anchor.x;
+				scores->rotation->target.y = scores->board_point.y -
+				scores->rotation->anchor.y;
+			}
+		scores->rotation->anchor.x = scores->rotation->anchor.x +
+		scores->rotation->block[anc_count].x;
+		scores->rotation->anchor.y = scores->rotation->anchor.y +
+		scores->rotation->block[anc_count].y;
 	}
-	scores->rotation = sort_trys(scores->rotation);
 }

@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 21:36:44 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/14 19:06:34 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,10 @@ typedef struct		s_token
 
 typedef struct		s_try
 {
-	int				score;
 	int				block_count;
+	t_point			target;
 	t_point			anchor;
 	t_point			*block;
-	struct s_try	*next;
 }					t_try;
 
 typedef struct		s_score
@@ -110,10 +109,10 @@ int					dist(t_point a, t_point b);
 int					ft_min(int a, int b);
 int					ft_max(int a, int b);
 
-t_score				*sort_scores(t_score *scores);
 t_try				*sort_trys(t_try *list);
-void				do_phase(t_game *filler, t_score *scores, int max, int mod);
-void				score_list_init(t_score **head, t_point point);
+t_score				*sort_scores(t_score *scores);
+void				do_phase(t_game *filler, t_score *scores, int *mo);
+t_score				*score_list_init(t_point point);
 void				play_piece(t_game filler);
 void				set_start(t_game *filler);
 void				set_token(t_token *token, char *line, int i, int type);
