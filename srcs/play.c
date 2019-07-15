@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 21:41:39 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/14 21:42:34 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,17 +143,30 @@ t_point			solve(t_game *filler, int x, int y, int overlap)
 
 static void		set_list(t_game *filler, int to_match, int mode, int i)
 {
+	int			tmp_score;
+	int			mo[3];
 	t_score		*list;
 
-	score_list_init(&list, filler->me_blocks[0]);
-	filler->scores = list;
+	filler->scores = score_list_init(filler->me_blocks[0]);
+	tmp_score = INT32_MAX;
+	mo[0] = to_match;
+	mo[1] = mode;
+	list = filler->scores;
 	while (i < filler->me_count)
 	{
-		do_phase(filler, list, to_match, mode);
-		if (list->score < INT32_MAX)
+		mo[2] = INT32_MAX;
+		do_phase(filler, list, mo);
+		list->target = list->rotation->target;
+		ft_putnbr(list->target.y);
+		ft_putchar(' ');
+		ft_putnbr(list->target.y);
+		ft_putchar('\n');
+		if (list->score < filler->scores->score)
 		{
+			filler->scores->score = list->score;
+			filler->target = list->target;
+			list->next = score_list_init(filler->me_blocks[i]);
 			list = list->next;
-			score_list_init(&list, filler->me_blocks[i]);
 		}
 		i++;
 	}
@@ -165,27 +178,26 @@ static void		set_list(t_game *filler, int to_match, int mode, int i)
 **	sets and sorts list of scores for valid block placements.
 */
 
-int				phase_one(t_game filler, int mode, int ch)
+int				phase_one(t_game *filler, int mode, int ch)
 {
 	int		max;
 	while (++ch < 2)
 	{
-		if ((!ch ? filler.board.max[ch] >= (filler.board.wide * 66) / 100 :
-				filler.board.max[ch] >= (filler.board.tall * 66) / 100) ||
-			filler.me_count > (filler.board.size / 8))
+		if ((!ch ? filler->board.max[ch] >= (filler->board.wide * 66) / 100 :
+				filler->board.max[ch] >= (filler->board.tall * 66) / 100) ||
+			filler->me_count > (filler->board.size / 8))
 			return (END_PHASE_1);
 	}
-	mode = filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1;
-	max = filler.board.max[mode] + filler.piece.max[mode];
+	mode = filler->piece.max[0] >= filler->piece.max[1] ? 0 : 1;
+	max = filler->board.max[mode] + filler->piece.max[mode];
 	ch = -1;
-	set_list(&filler, max, mode, 0);
+	set_list(filler, max, mode, 0);
 /*	Testing BEGIN
 	printf("BC: %d\n", filler.scores->rotation->block_count);
-	while (filler.scores->rotation)
+	while (filler.scores)
 	{
 		printf("BEST: %d\n", filler.scores->score);
-		printf("SCORE: %d\n", filler.scores->rotation->score);
-		filler.scores->rotation = filler.scores->rotation->next;
+		filler.scores = filler.scores->next;
 	}
 //	Testing END
 */
@@ -198,12 +210,12 @@ int				phase_one(t_game filler, int mode, int ch)
 
 void			play_piece(t_game filler)
 {
-	t_point			target;
+//	t_point			target;
 //	t_index			*alt_list;
 	int				decision;
 
 	decision = 0;
-	decision |= phase_one(filler, 0, -1);
+	decision |= phase_one(&filler, 0, -1);
 //	diff_piece(filler.piece.max, &filler, 0, 0);
 //	alt_list = sort_diffs(&filler, 0, 0,
 //		filler.piece.max[0] >= filler.piece.max[1] ? 0 : 1);
@@ -222,8 +234,9 @@ void			play_piece(t_game filler)
 //	write(1, "\n", 1);
 //	target = solve(&filler, 0, 0, 0);
 //	free_shit(&filler);
-	ft_putnbr(target.y);
+
+	ft_putnbr(filler.target.y);
 	ft_putchar(' ');
-	ft_putnbr(target.x);
+	ft_putnbr(filler.target.x);
 	ft_putchar('\n');
 }
