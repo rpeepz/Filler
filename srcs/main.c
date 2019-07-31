@@ -6,16 +6,16 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/13 19:53:56 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:50:33 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
 
 /*
-**	for each block filled by either player assigns x,y value
-**	to t_point pointer at an increasing index, which totals max spots taken
-**	by either player and stores in me/you count.
+**	for each block filled by either player, assigns x,y value to
+**	t_point pointer at an increasing index, which totals max spots taken
+**	by either player stored in me/you count.
 */
 
 static void		whose_blocks(t_game *filler)
