@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/14 21:42:34 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/30 20:19:42 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ t_point			solve(t_game *filler, int x, int y, int overlap)
 **	}
 */
 
-static void		set_list(t_game *filler, int to_match, int mode, int i)
+static void		set_list(t_game *filler, int max, int mode, int i)
 {
 	int			tmp_score;
 	int			mo[3];
@@ -149,7 +149,7 @@ static void		set_list(t_game *filler, int to_match, int mode, int i)
 
 	filler->scores = score_list_init(filler->me_blocks[0]);
 	tmp_score = INT32_MAX;
-	mo[0] = to_match;
+	mo[0] = max;
 	mo[1] = mode;
 	list = filler->scores;
 	while (i < filler->me_count)
@@ -157,10 +157,6 @@ static void		set_list(t_game *filler, int to_match, int mode, int i)
 		mo[2] = INT32_MAX;
 		do_phase(filler, list, mo);
 		list->target = list->rotation->target;
-		ft_putnbr(list->target.y);
-		ft_putchar(' ');
-		ft_putnbr(list->target.y);
-		ft_putchar('\n');
 		if (list->score < filler->scores->score)
 		{
 			filler->scores->score = list->score;
@@ -171,6 +167,7 @@ static void		set_list(t_game *filler, int to_match, int mode, int i)
 		i++;
 	}
 	filler->scores = sort_scores(filler->scores);
+	filler->target = filler->scores->target;
 }
 
 /*

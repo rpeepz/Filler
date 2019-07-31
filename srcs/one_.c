@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/14 21:15:08 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/30 20:15:53 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,14 +120,14 @@ void			do_phase(t_game *filler, t_score *scores, int *mo)
 	int		anc_count;
 	t_point	point;
 
-	anc_count = 0;
+	anc_count = -1;
 	point = (t_point){0, 0};
 	piece_anchor(scores->rotation, filler->piece, point, 0);
 	while (++anc_count < scores->rotation->block_count)
 	{
 		piece_blocks(filler, scores->rotation, point,
 						scores->rotation->block_count);
-		if (scan_diff(filler, scores, mo, anc_count - 1))
+		if (scan_diff(filler, scores, mo, anc_count))
 			if (mo[2] < scores->score)
 			{
 				scores->score = mo[2];
@@ -137,8 +137,8 @@ void			do_phase(t_game *filler, t_score *scores, int *mo)
 				scores->rotation->anchor.y;
 			}
 		scores->rotation->anchor.x = scores->rotation->anchor.x +
-		scores->rotation->block[anc_count].x;
+		scores->rotation->block[anc_count + 1].x;
 		scores->rotation->anchor.y = scores->rotation->anchor.y +
-		scores->rotation->block[anc_count].y;
+		scores->rotation->block[anc_count + 1].y;
 	}
 }
