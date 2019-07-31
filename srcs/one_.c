@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/30 20:15:53 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/07/31 15:37:20 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ static int		scan_diff(t_game *filler, t_score *scores, int *mo, int anc)
 **	update best score for current t_score.
 */
 
-void			do_phase(t_game *filler, t_score *scores, int *mo)
+void			phase_one(t_game *filler, t_score *scores, int *mo)
 {
 	int		anc_count;
 	t_point	point;
