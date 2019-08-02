@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 17:35:29 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/01 22:22:27 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ static int		scan_diff(t_game *filler, t_score *scores, int *mo, int anc)
 			|| tmp.x < 0 || tmp.y < 0)
 			tmp = wrapper(tmp, filler->board.wide, filler->board.tall);
 		if (filler->board.data[tmp.y][tmp.x] == filler->you.id || (i != anc &&
-			filler->board.data[tmp.y][tmp.x] == filler->me.id))
+			filler->board.data[tmp.y][tmp.x] == filler->me.id) || (i == anc &&
+			filler->board.data[tmp.y][tmp.x] != filler->me.id))
 			return (0);
 		!mo[1] ?
 		(point = ABS(scores->rotation->block[i].x) + filler->board.max[mo[1]]) :
@@ -120,10 +121,10 @@ void			phase_one(t_game *filler, t_score *scores, int *mo)
 	int		anc_count;
 	t_point	point;
 
-	anc_count = -1;
+	anc_count = 0;
 	point = (t_point){0, 0};
 	piece_anchor(scores->rotation, filler->piece, point, 0);
-	while (++anc_count < scores->rotation->block_count)
+	while (anc_count < scores->rotation->block_count)
 	{
 		piece_blocks(filler, scores->rotation, point,
 						scores->rotation->block_count);
@@ -136,9 +137,10 @@ void			phase_one(t_game *filler, t_score *scores, int *mo)
 				scores->rotation->target.y = scores->board_point.y -
 				scores->rotation->anchor.y;
 			}
-		scores->rotation->anchor.x = scores->rotation->anchor.x +
-		scores->rotation->block[anc_count + 1].x;
-		scores->rotation->anchor.y = scores->rotation->anchor.y +
-		scores->rotation->block[anc_count + 1].y;
+		IF_THEN(++anc_count < scores->rotation->block_count,
+			(scores->rotation->anchor.x = scores->rotation->anchor.x +
+			scores->rotation->block[anc_count].x) &&
+			(scores->rotation->anchor.y = scores->rotation->anchor.y +
+			scores->rotation->block[anc_count].y));
 	}
 }
