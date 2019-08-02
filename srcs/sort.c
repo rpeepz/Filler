@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 15:06:56 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/31 16:01:20 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/01 22:27:59 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void		split_lists(t_score *source, t_score **frontref, t_score **backref)
 	slow->next = NULL;
 }
 
-void			sort_scores(t_score **scores)
+void		sort_scores(t_score **scores)
 {
 	t_score		*head;
 	t_score		*a;
