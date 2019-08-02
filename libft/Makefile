@@ -6,11 +6,11 @@
 #    By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/13 21:22:38 by rpapagna          #+#    #+#              #
-#    Updated: 2019/06/20 04:56:49 by rpapagna         ###   ########.fr        #
+#    Updated: 2019/07/31 16:24:29 by rpapagna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= libft.a
+NAME	= libft
 
 CFLAGS	= -Wall -Werror -Wextra -g
 INCL	= -I includes/
@@ -135,28 +135,29 @@ clean:
 		@rm -rf obj
 
 fclean: clean
-		@printf "[$(RED)$(NAME)$(NC)]\tRm archive\n"
-		@rm -rf $(NAME)
+		@printf "[$(RED)$(NAME).a$(NC)]\tRm archive\n"
+		@rm -rf $(NAME).a
+		@rm -rf includes/$(NAME).h.gch
 
 re: fclean all
 
 $(NAME): $(OBJ)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
-		@ar -rcs $(NAME) $(OBJ)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
+		@ar -rcs $(NAME).a $(OBJ)
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
 $(OBJ_PATH):
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
 		@mkdir -p $@
 
 $(OBJ_PATH)/%.o: $(LIB_PATH)/%.c | $(OBJ_PATH)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):/:$(NC)]\r" #PRINT
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG):/:$(NC)]\r" #PRINT
 		@gcc $(CFLAGS) $(INCL) -o $@ -c $<
 
 $(OBJ_PATH)/%.o: $(PRNTF_PATH)/%.c | $(OBJ_PATH)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG):\:$(NC)]\r" #PRINT
 		@gcc $(CFLAGS) $(INCL) -o $@ -c $<
 
 $(OBJ_PATH)/%.o: $(SPRNTF_PATH)/%.c | $(OBJ_PATH)
-		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG):/:$(NC)]\r" #PRINT
+		@printf "[$(GREEN)$(NAME).a$(NC)]\t[$(MAG):/:$(NC)]\r" #PRINT
 		@gcc $(CFLAGS) $(INCL) -o $@ -c $<

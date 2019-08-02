@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/30 19:47:12 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/01 04:06:50 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void			set_start(t_game *filler)
 **	allocate list of scores for determining best play spot
 */
 
-t_score			*score_list_init(t_point point)
+void			score_list_init(t_point point, t_score *list)
 {
 	t_score		*scores;
 
@@ -118,5 +118,5 @@ t_score			*score_list_init(t_point point)
 	scores->rotation->target = (t_point){0, 0};
 	scores->rotation->block = NULL;
 	scores->next = NULL;
-	return (scores);
+	list = scores;
 }
