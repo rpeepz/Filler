@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 17:35:37 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/01 22:25:16 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 /*
 **	initializes list of scores, calls phase one for every block filled by me.
-**	
 */
 
 static void		set_list(t_game *filler, int max, int mode, int i)
@@ -23,26 +22,22 @@ static void		set_list(t_game *filler, int max, int mode, int i)
 	t_score		*list;
 
 	list = NULL;
-	score_list_init(filler->me_blocks[0], list);
-	printf("X[%d]\n", list->rotation->target.x);
+	score_list_init(filler->me_blocks[0], &list);
 	mo[0] = max;
 	mo[1] = mode;
 	filler->scores = list;
 	while (++i < filler->me_count + 1)
 	{
-		score_list_init(filler->me_blocks[i], list);
 		mo[2] = INT32_MAX;
 		phase_one(filler, list, mo);
 		list->target = list->rotation->target;
-		if (list->score < filler->scores->score)
+		if (list->score < filler->score)
 		{
-			filler->scores->score = list->score;
+			filler->score = list->score;
 			filler->target = list->target;
 		}
-		list = list->next;
+		list->board_point = filler->me_blocks[i];
 	}
-	sort_scores(&filler->scores);
-	filler->target = filler->scores->target;
 }
 
 /*
@@ -62,8 +57,9 @@ int				check_phase(t_game *filler, int max, int mode, int ch)
 	mode = filler->piece.max[0] >= filler->piece.max[1] ? 0 : 1;
 	max = filler->board.max[mode] + filler->piece.max[mode];
 	ch = -1;
+	filler->score = INT32_MAX;
 	set_list(filler, max, mode, -1);
-/* 
+/*
 //	Testing BEGIN
 	printf("BlockCount[%d]\n", filler->scores->rotation->block_count);
 	while (filler->scores)
@@ -82,25 +78,10 @@ int				check_phase(t_game *filler, int max, int mode, int ch)
 
 void			play_piece(t_game filler)
 {
-//	t_point			target;
 	int				decision;
 
 	decision = 0;
 	decision |= check_phase(&filler, 0, 0, -1);
-//	diff_mergesort(&filler.list);
-//	diff_mergesort(&alt_list);
-//	list_join(&filler.list, &alt_list);
-//	while (filler.list)
-//	while (alt_list)
-//	{
-//		ft_putnbr(filler.list->index);
-//		ft_putnbr(alt_list->index);
-//		write(1, ", ", 2);
-//		filler.list = filler.list->next;
-//		alt_list = alt_list->next;
-//	}
-//	write(1, "\n", 1);
-//	target = solve(&filler, 0, 0, 0);
 //	free_shit(&filler);
 	ft_putnbr(filler.target.y);
 	ft_putchar(' ');
