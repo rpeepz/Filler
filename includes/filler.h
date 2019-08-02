@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 04:07:03 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/01 20:21:32 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef struct		s_game
 	char			start;
 	int				me_count;
 	int				you_count;
+	int				score;
 	t_point			target;
 	t_point			*me_blocks;
 	t_point			*you_blocks;
@@ -99,7 +100,7 @@ typedef struct		s_game
 t_try				*sort_trys(t_try *list);
 void				sort_scores(t_score **scores);
 void				phase_one(t_game *filler, t_score *scores, int *mo);
-void				score_list_init(t_point point, t_score *list);
+void				score_list_init(t_point point, t_score **list);
 void				play_piece(t_game filler);
 void				set_start(t_game *filler);
 void				set_token(t_token *token, char *line, int i, int type);
