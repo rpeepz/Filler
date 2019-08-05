@@ -22,5 +22,6 @@ testing*
 ._*
 filler.trace
 *.DS_Store
+*.log
 .vscode
 archives
