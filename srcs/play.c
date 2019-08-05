@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 15:28:53 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 16:14:05 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ static void		set_list(t_game *filler, int max, int mode, int i)
 		}
 		list->board_point = filler->me_blocks[i];
 	}
-	free(list->rotation);
-	free(list);
+	if (list->rotation)
+		free(list->rotation);
+	if (list)
+		free(list);
 }
 
 /*

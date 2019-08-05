@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 15:36:53 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 16:19:26 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,16 @@
 **	free remaining allocated pointers by the end of the game.
 */
 
-static void		free_filler(t_game *filler, char *str, int b, int p)
+static void		free_filler(t_game *filler)
 {
-	ft_memdel((void **)&filler->me_blocks);
-	ft_memdel((void **)&filler->you_blocks);
-	while (b < filler->board.tall)
-	{
-		str = filler->board.data[b];
-		ft_strdel(&str);
-		b++;
-	}
-	while (p < filler->piece.tall)
-	{
-		str = filler->board.data[p];
-		ft_strdel(&str);
-		p++;
-	}
-	ft_memdel((void **)&filler->board.data);
-	ft_memdel((void **)&filler->piece.data);
+	if (filler->me_blocks)
+		ft_memdel((void **)&filler->me_blocks);
+	if (filler->you_blocks)
+		ft_memdel((void **)&filler->you_blocks);
+	if (filler->board.data)
+		ft_memdel((void **)&filler->board.data);
+	if (filler->piece.data)
+		ft_memdel((void **)&filler->piece.data);
 }
 
 /*
@@ -115,7 +107,7 @@ static void		begin_game(t_game filler, char **line)
 		}
 		ft_strdel(line);
 	}
-	free_filler(&filler, "", 0, 0);
+	free_filler(&filler);
 }
 
 /*
