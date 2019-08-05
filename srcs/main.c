@@ -6,11 +6,35 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/07/31 14:50:33 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 15:36:53 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
+
+/*
+**	free remaining allocated pointers by the end of the game.
+*/
+
+static void		free_filler(t_game *filler, char *str, int b, int p)
+{
+	ft_memdel((void **)&filler->me_blocks);
+	ft_memdel((void **)&filler->you_blocks);
+	while (b < filler->board.tall)
+	{
+		str = filler->board.data[b];
+		ft_strdel(&str);
+		b++;
+	}
+	while (p < filler->piece.tall)
+	{
+		str = filler->board.data[p];
+		ft_strdel(&str);
+		p++;
+	}
+	ft_memdel((void **)&filler->board.data);
+	ft_memdel((void **)&filler->piece.data);
+}
 
 /*
 **	for each block filled by either player, assigns x,y value to
@@ -18,7 +42,7 @@
 **	by either player stored in me/you count.
 */
 
-static void		whose_blocks(t_game *filler)
+void			whose_blocks(t_game *filler)
 {
 	t_point	point;
 
@@ -42,7 +66,6 @@ static void		whose_blocks(t_game *filler)
 
 /*
 **	allocate for total blocks in board a pointer to t_point for both players.
-**	calls whose blocks
 */
 
 static void		set_blocks(t_game *filler)
@@ -63,38 +86,8 @@ static void		set_blocks(t_game *filler)
 }
 
 /*
-**	find max filled hight or width of given token and stores in toke->max[].
-*/
-
-static void		set_max(t_token *token, int type, int mode)
-{
-	int		x;
-	int		y;
-
-	x = 0;
-	y = 0;
-	token->max[mode] = 0;
-	while (x < (mode == 1 ? token->tall : token->wide))
-	{
-		y = 0;
-		while (y < (mode == 1 ? token->wide : token->tall))
-		{
-			if (token->data[(mode == 1 ? x : y)][(mode == 1 ? y : x)] ==
-				(!type ? '*' : type))
-			{
-				token->max[mode]++;
-				break ;
-			}
-			y++;
-		}
-		x++;
-	}
-}
-
-/*
 **	loop thru stdout sets board and piece tokens.
 **	find properties of piece and board.
-**	calls play piece
 */
 
 static void		begin_game(t_game filler, char **line)
@@ -122,13 +115,13 @@ static void		begin_game(t_game filler, char **line)
 		}
 		ft_strdel(line);
 	}
+	free_filler(&filler, "", 0, 0);
 }
 
 /*
 **	main function
 **
-**	checks for proper start and inits t_game struct.
-**	calls begin game
+**	checks for proper start conditions and inits game struct.
 */
 
 int				main(void)
@@ -142,7 +135,6 @@ int				main(void)
 		ft_bzero(&filler, sizeof(t_game));
 		filler.me_blocks = NULL;
 		filler.you_blocks = NULL;
-		filler.list = NULL;
 		filler.me.id = (line[10] == '1' ? 'O' : 'X');
 		filler.you.id = (line[10] == '1' ? 'X' : 'O');
 		begin_game(filler, &line);

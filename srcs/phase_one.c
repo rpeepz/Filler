@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   one_.c                                             :+:      :+:    :+:   */
+/*   phase_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 22:22:27 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 15:20:21 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,19 +116,17 @@ static int		scan_diff(t_game *filler, t_score *scores, int *mo, int anc)
 **	update best score for current t_score.
 */
 
-void			phase_one(t_game *filler, t_score *scores, int *mo)
+void			phase_one(t_game *filler, t_score *scores, int *mo, int anc_ct)
 {
-	int		anc_count;
 	t_point	point;
 
-	anc_count = 0;
 	point = (t_point){0, 0};
 	piece_anchor(scores->rotation, filler->piece, point, 0);
-	while (anc_count < scores->rotation->block_count)
+	while (anc_ct < scores->rotation->block_count)
 	{
 		piece_blocks(filler, scores->rotation, point,
 						scores->rotation->block_count);
-		if (scan_diff(filler, scores, mo, anc_count))
+		if (scan_diff(filler, scores, mo, anc_ct))
 			if (mo[2] < scores->score)
 			{
 				scores->score = mo[2];
@@ -137,10 +135,12 @@ void			phase_one(t_game *filler, t_score *scores, int *mo)
 				scores->rotation->target.y = scores->board_point.y -
 				scores->rotation->anchor.y;
 			}
-		IF_THEN(++anc_count < scores->rotation->block_count,
+		IF_THEN(++anc_ct < scores->rotation->block_count,
 			(scores->rotation->anchor.x = scores->rotation->anchor.x +
-			scores->rotation->block[anc_count].x) &&
+			scores->rotation->block[anc_ct].x) &&
 			(scores->rotation->anchor.y = scores->rotation->anchor.y +
-			scores->rotation->block[anc_count].y));
+			scores->rotation->block[anc_ct].y));
 	}
+	if (scores->rotation->block)
+		free(scores->rotation->block);
 }

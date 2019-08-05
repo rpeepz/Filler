@@ -6,7 +6,7 @@
 #    By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/01 20:19:37 by rpapagna          #+#    #+#              #
-#    Updated: 2019/07/31 16:25:52 by rpapagna         ###   ########.fr        #
+#    Updated: 2019/08/05 15:22:01 by rpapagna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,10 @@ MAG		=\033[0;35m
 NC		=\033[0m
 
 SRCS 	=main.c\
+		set.c\
 		play.c\
-		set_.c\
-		sort.c\
-		one_.c
+		phase_one.c\
+		sort.c
 
 OBJ		= $(addprefix $(OBJ_PATH)/,$(SRCS:.c=.o))
 

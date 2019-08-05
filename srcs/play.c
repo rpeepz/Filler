@@ -6,11 +6,30 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 22:25:16 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 15:28:53 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
+
+/*
+**	allocate list of scores for determining best play spot
+*/
+
+static void		score_list_init(t_point point, t_score **list)
+{
+	t_score		*scores;
+
+	scores = ft_memalloc(sizeof(t_score));
+	scores->rotation = ft_memalloc(sizeof(t_try));
+	scores->score = INT32_MAX;
+	scores->board_point = point;
+	scores->target = (t_point){0, 0};
+	scores->rotation->target = (t_point){0, 0};
+	scores->rotation->block = NULL;
+	scores->next = NULL;
+	*list = scores;
+}
 
 /*
 **	initializes list of scores, calls phase one for every block filled by me.
@@ -29,7 +48,7 @@ static void		set_list(t_game *filler, int max, int mode, int i)
 	while (++i < filler->me_count + 1)
 	{
 		mo[2] = INT32_MAX;
-		phase_one(filler, list, mo);
+		phase_one(filler, list, mo, 0);
 		list->target = list->rotation->target;
 		if (list->score < filler->score)
 		{
@@ -38,42 +57,36 @@ static void		set_list(t_game *filler, int max, int mode, int i)
 		}
 		list->board_point = filler->me_blocks[i];
 	}
+	free(list->rotation);
+	free(list);
 }
 
 /*
 **	sets trigger to indicate first placements in early game.
 **	sets and sorts list of scores for valid block placements.
+**	TODO
+**	return (END_PHASE_1);' after first if condition to initiate phase two
 */
 
-int				check_phase(t_game *filler, int max, int mode, int ch)
+static int		check_phase(t_game *filler, int max, int mode, int ch)
 {
 	while (++ch < 2)
 	{
 		if ((!ch ? filler->board.max[ch] >= (filler->board.wide * 66) / 100 :
 				filler->board.max[ch] >= (filler->board.tall * 66) / 100) ||
 			filler->me_count > (filler->board.size / 8))
-			;//return (END_PHASE_1);
+			;
 	}
 	mode = filler->piece.max[0] >= filler->piece.max[1] ? 0 : 1;
 	max = filler->board.max[mode] + filler->piece.max[mode];
 	ch = -1;
 	filler->score = INT32_MAX;
 	set_list(filler, max, mode, -1);
-/*
-//	Testing BEGIN
-	printf("BlockCount[%d]\n", filler->scores->rotation->block_count);
-	while (filler->scores)
-	{
-		printf("BestScore [%d]\n", filler->scores->score);
-		filler->scores = filler->scores->next;
-	}
-//	Testing END
-*/
 	return (0);
 }
 
 /*
-**	make decision where to place in three phase process.
+**	make decision where to place in (planned three) phase process.
 */
 
 void			play_piece(t_game filler)
@@ -82,7 +95,6 @@ void			play_piece(t_game filler)
 
 	decision = 0;
 	decision |= check_phase(&filler, 0, 0, -1);
-//	free_shit(&filler);
 	ft_putnbr(filler.target.y);
 	ft_putchar(' ');
 	ft_putnbr(filler.target.x);

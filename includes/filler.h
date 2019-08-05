@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 20:21:32 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 15:26:51 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,6 @@ typedef struct		s_who
 	char			id;
 	t_point			start;
 }					t_who;
-
-typedef struct		s_index
-{
-	int				index;
-	int				diff;
-	struct s_index	*next;
-}					t_index;
 
 typedef struct		s_token
 {
@@ -85,7 +78,6 @@ typedef struct		s_game
 	t_point			*you_blocks;
 	t_who			me;
 	t_who			you;
-	t_index			*list;
 	t_token			board;
 	t_token			piece;
 	t_score			*scores;
@@ -97,19 +89,12 @@ typedef struct		s_game
 **	---------------------------------
 */
 
-t_try				*sort_trys(t_try *list);
-void				sort_scores(t_score **scores);
-void				phase_one(t_game *filler, t_score *scores, int *mo);
-void				score_list_init(t_point point, t_score **list);
-void				play_piece(t_game filler);
 void				set_start(t_game *filler);
+void				set_max(t_token *token, int type, int mode);
+void				phase_one(t_game *filler, t_score *scores, int *mo, int ct);
+void				play_piece(t_game filler);
 void				set_token(t_token *token, char *line, int i, int type);
 
-void				diff_mergesort(t_index **headlist);
-void				list_join(t_index **head, t_index **alt_list);
+void				sort_scores(t_score **scores);
 
-int					position_valid(t_game filler, t_point point);
-int					dist(t_point a, t_point b);
-int					ft_min(int a, int b);
-int					ft_max(int a, int b);
 #endif

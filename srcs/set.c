@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_.c                                             :+:      :+:    :+:   */
+/*   set.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/01 19:24:31 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/05 15:29:01 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 **	free info in token
 */
 
-static void		free_token(t_token *token, char *str, int i, int offset)
+void			free_token(t_token *token, char *str, int i, int offset)
 {
 	if (!token->data)
 		return ;
@@ -103,20 +103,30 @@ void			set_start(t_game *filler)
 }
 
 /*
-**	allocate list of scores for determining best play spot
+**	find max filled hight or width of given token and stores in toke->max[].
 */
 
-void			score_list_init(t_point point, t_score **list)
+void			set_max(t_token *token, int type, int mode)
 {
-	t_score		*scores;
+	int		x;
+	int		y;
 
-	scores = ft_memalloc(sizeof(t_score));
-	scores->rotation = ft_memalloc(sizeof(t_try));
-	scores->score = INT32_MAX;
-	scores->board_point = point;
-	scores->target = (t_point){0, 0};
-	scores->rotation->target = (t_point){0, 0};
-	scores->rotation->block = NULL;
-	scores->next = NULL;
-	*list = scores;
+	x = 0;
+	y = 0;
+	token->max[mode] = 0;
+	while (x < (mode == 1 ? token->tall : token->wide))
+	{
+		y = 0;
+		while (y < (mode == 1 ? token->wide : token->tall))
+		{
+			if (token->data[(mode == 1 ? x : y)][(mode == 1 ? y : x)] ==
+				(!type ? '*' : type))
+			{
+				token->max[mode]++;
+				break ;
+			}
+			y++;
+		}
+		x++;
+	}
 }
