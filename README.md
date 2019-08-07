@@ -1,5 +1,5 @@
 # phil
-An Ai player that I created to play a game developed by 42 students
+An Ai player that I created to play a game developed by 42 students <br/>
 僕は埋めるよ!!
 
 # Subject
