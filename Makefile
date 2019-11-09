@@ -6,7 +6,7 @@
 #    By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/01 20:19:37 by rpapagna          #+#    #+#              #
-#    Updated: 2019/08/05 15:22:01 by rpapagna         ###   ########.fr        #
+#    Updated: 2019/11/08 18:20:50 by rpapagna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,9 +63,9 @@ $(OBJ_PATH)/%.o: srcs/%.c | $(OBJ_PATH)
 		@gcc $(CFLAGS) $(INCL) -o $@ -c $<
 
 1mo:
-		@gcc -Wall -Wextra $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME)
+		@gcc -Wall -Wextra -g $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
-debug:
-		@gcc -g -Wall -Wextra $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME) -fsanitize=address
+sanitize:
+		@gcc -g -Wall -Wextra $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME)
 		@printf "[$(YELLOW)debug$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
