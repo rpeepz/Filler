@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 15:01:33 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 15:20:21 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/20 19:22:40 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ static void		piece_blocks(t_game *filler, t_try *list, t_point point, int n)
 static t_point	wrapper(t_point point, int wide, int tall)
 {
 	if (point.x >= wide)
-		point.x = point.x - wide;
+		point.x = point.x - wide - 1;
 	if (point.y >= tall)
-		point.y = point.y - tall;
+		point.y = point.y - tall - 1;
 	if (point.x < 0)
 		point.x = wide + point.x;
 	if (point.y < 0)
@@ -96,9 +96,9 @@ static int		scan_diff(t_game *filler, t_score *scores, int *mo, int anc)
 		if (tmp.x >= filler->board.wide || tmp.y >= filler->board.tall
 			|| tmp.x < 0 || tmp.y < 0)
 			tmp = wrapper(tmp, filler->board.wide, filler->board.tall);
-		if (filler->board.data[tmp.y][tmp.x] == filler->you.id || (i != anc &&
-			filler->board.data[tmp.y][tmp.x] == filler->me.id) || (i == anc &&
-			filler->board.data[tmp.y][tmp.x] != filler->me.id))
+		if (filler->board.data[tmp.y][tmp.x] == filler->you_id || (i != anc &&
+			filler->board.data[tmp.y][tmp.x] == filler->me_id) || (i == anc &&
+			filler->board.data[tmp.y][tmp.x] != filler->me_id))
 			return (0);
 		!mo[1] ?
 		(point = ABS(scores->rotation->block[i].x) + filler->board.max[mo[1]]) :
@@ -140,7 +140,7 @@ void			phase_one(t_game *filler, t_score *scores, int *mo, int anc_ct)
 			scores->rotation->block[anc_ct].x) &&
 			(scores->rotation->anchor.y = scores->rotation->anchor.y +
 			scores->rotation->block[anc_ct].y));
+		if (scores->rotation->block)
+			free(scores->rotation->block);
 	}
-	if (scores->rotation->block)
-		free(scores->rotation->block);
 }

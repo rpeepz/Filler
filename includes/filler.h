@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:41:26 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 15:26:51 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/20 19:16:06 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,6 @@ typedef struct		s_point
 	int				x;
 	int				y;
 }					t_point;
-
-typedef struct		s_who
-{
-	char			id;
-	t_point			start;
-}					t_who;
 
 typedef struct		s_token
 {
@@ -70,14 +64,14 @@ typedef struct		s_score
 typedef struct		s_game
 {
 	char			start;
+	char			me_id;
+	char			you_id;
 	int				me_count;
 	int				you_count;
 	int				score;
 	t_point			target;
 	t_point			*me_blocks;
 	t_point			*you_blocks;
-	t_who			me;
-	t_who			you;
 	t_token			board;
 	t_token			piece;
 	t_score			*scores;
@@ -89,8 +83,7 @@ typedef struct		s_game
 **	---------------------------------
 */
 
-void				set_start(t_game *filler);
-void				set_max(t_token *token, int type, int mode);
+void				set_blocks(t_game *filler);
 void				phase_one(t_game *filler, t_score *scores, int *mo, int ct);
 void				play_piece(t_game filler);
 void				set_token(t_token *token, char *line, int i, int type);

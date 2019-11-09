@@ -6,7 +6,7 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 16:19:26 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/08 01:02:41 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,65 +16,32 @@
 **	free remaining allocated pointers by the end of the game.
 */
 
-static void		free_filler(t_game *filler)
+static void		free_filler(t_game *filler, int i, int type)
 {
-	if (filler->me_blocks)
-		ft_memdel((void **)&filler->me_blocks);
-	if (filler->you_blocks)
-		ft_memdel((void **)&filler->you_blocks);
-	if (filler->board.data)
-		ft_memdel((void **)&filler->board.data);
-	if (filler->piece.data)
-		ft_memdel((void **)&filler->piece.data);
-}
-
-/*
-**	for each block filled by either player, assigns x,y value to
-**	t_point pointer at an increasing index, which totals max spots taken
-**	by either player stored in me/you count.
-*/
-
-void			whose_blocks(t_game *filler)
-{
-	t_point	point;
-
-	filler->me_count = 0;
-	filler->you_count = 0;
-	point.y = 0;
-	while (point.y < filler->board.tall)
+	if (!type)
 	{
-		point.x = 0;
-		while (point.x < filler->board.wide)
+		while (type < filler->board.tall)
 		{
-			if (filler->board.data[point.y][point.x] == filler->me.id)
-				filler->me_blocks[filler->me_count++] = point;
-			else if (filler->board.data[point.y][point.x] == filler->you.id)
-				filler->you_blocks[filler->you_count++] = point;
-			point.x++;
+			free(filler->board.data[type]);
+			type++;
 		}
-		point.y++;
+		while (i < filler->piece.tall)
+		{
+			free(filler->piece.data[i]);
+			i++;
+		}
 	}
-}
-
-/*
-**	allocate for total blocks in board a pointer to t_point for both players.
-*/
-
-static void		set_blocks(t_game *filler)
-{
-	int		size;
-
-	if (filler->me_blocks)
-		ft_memdel((void **)&filler->me_blocks);
-	if (filler->you_blocks)
-		ft_memdel((void **)&filler->you_blocks);
-	size = filler->board.size;
-	if (!(filler->me_blocks = ft_memalloc(sizeof(t_point) * size)) ||
-		!(filler->you_blocks = ft_memalloc(sizeof(t_point) * size)))
-		exit(1);
-	ft_bzero(filler->me_blocks, sizeof(t_point) * size);
-	ft_bzero(filler->you_blocks, sizeof(t_point) * size);
-	whose_blocks(filler);
+	else
+	{
+		if (filler->me_blocks)
+			ft_memdel((void **)&filler->me_blocks);
+		if (filler->you_blocks)
+			ft_memdel((void **)&filler->you_blocks);
+		if (filler->board.data)
+			ft_memdel((void **)&filler->board.data);
+		if (filler->piece.data)
+			ft_memdel((void **)&filler->piece.data);
+	}
 }
 
 /*
@@ -82,32 +49,26 @@ static void		set_blocks(t_game *filler)
 **	find properties of piece and board.
 */
 
-static void		begin_game(t_game filler, char **line)
+static void		begin_game(t_game filler)
 {
-	ft_strdel(line);
-	while (get_next_line(0, line) > 0)
+	char	*line;
+
+	while (get_next_line(0, &line) > 0)
 	{
-		if (!*(line))
+		if (!line)
 			continue;
-		if (!ft_strncmp(*line, "Plateau", 7))
+		if (!ft_strncmp(line, "Plateau", 7))
+			set_token(&filler.board, line, 0, 1);
+		else if (!ft_strncmp(line, "Piece", 5))
 		{
-			set_token(&filler.board, *line, 0, 1);
-			if (!filler.start)
-				set_start(&filler);
-		}
-		else if (!ft_strncmp(*line, "Piece", 5))
-		{
-			set_token(&filler.piece, *line, 0, 0);
-			set_max(&filler.piece, 0, 0);
-			set_max(&filler.piece, 0, 1);
-			set_max(&filler.board, (int)filler.me.id, 0);
-			set_max(&filler.board, (int)filler.me.id, 1);
+			set_token(&filler.piece, line, 0, 0);
 			set_blocks(&filler);
 			play_piece(filler);
+			free_filler(&filler, 0, 0);
 		}
-		ft_strdel(line);
+		ft_strdel(&line);
 	}
-	free_filler(&filler);
+	free_filler(&filler, 0, 1);
 }
 
 /*
@@ -127,9 +88,10 @@ int				main(void)
 		ft_bzero(&filler, sizeof(t_game));
 		filler.me_blocks = NULL;
 		filler.you_blocks = NULL;
-		filler.me.id = (line[10] == '1' ? 'O' : 'X');
-		filler.you.id = (line[10] == '1' ? 'X' : 'O');
-		begin_game(filler, &line);
+		filler.me_id = (line[10] == '1' ? 'O' : 'X');
+		filler.you_id = (line[10] == '1' ? 'X' : 'O');
+		free(line);
+		begin_game(filler);
 	}
 	else
 		return (1);

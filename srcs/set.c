@@ -6,38 +6,23 @@
 /*   By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 18:42:42 by rpapagna          #+#    #+#             */
-/*   Updated: 2019/08/05 15:29:01 by rpapagna         ###   ########.fr       */
+/*   Updated: 2019/08/08 01:02:26 by rpapagna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/filler.h"
 
 /*
-**	helper function for set token
-**	free info in token
-*/
-
-void			free_token(t_token *token, char *str, int i, int offset)
-{
-	if (!token->data)
-		return ;
-	while (i < token->tall)
-	{
-		str = token->data[i] - offset;
-		ft_strdel(&str);
-		i++;
-	}
-	ft_memdel((void **)&token->data);
-}
-
-/*
 **	setting board data or piece data
 */
 
-void			set_token(t_token *token, char *line, int i, int type)
+void			set_token(t_token *token, char *info, int i, int type)
 {
-	free_token(token, "", i, (type * 4));
-	line = ft_strchr(line, ' ') + 1;
+	char	*line;
+
+	if (token->data)
+		ft_memdel((void **)&token->data);
+	line = ft_strchr(info, ' ') + 1;
 	token->tall = ft_atoi(line);
 	token->wide = ft_atoi(ft_strchr(line, ' '));
 	token->size = token->tall * token->wide;
@@ -47,59 +32,13 @@ void			set_token(t_token *token, char *line, int i, int type)
 		ft_strdel(&line);
 	}
 	token->data = ft_memalloc(sizeof(char *) * token->tall);
-	while (i < token->tall && get_next_line(0, &line))
+	while (i < token->tall)
 	{
-		token->data[i] = line + (type * 4);
+		get_next_line(0, &line);
+		token->data[i] = ft_strdup(line + (type * 4));
+		free(line);
 		i++;
 	}
-}
-
-/*
-**	helper function for set start
-*/
-
-static void		set_players(t_game *filler, int y, int x, char id)
-{
-	if (id)
-	{
-		filler->me.id == 'X' ? (filler->me.start.y = y) :
-			(filler->you.start.y = y);
-		filler->me.id == 'X' ? (filler->me.start.x = x) :
-			(filler->you.start.x = x);
-	}
-	else
-	{
-		filler->me.id == 'O' ? (filler->me.start.y = y) :
-			(filler->you.start.y = y);
-		filler->me.id == 'O' ? (filler->me.start.x = x) :
-			(filler->you.start.x = x);
-	}
-}
-
-/*
-**	setting start location for each player
-*/
-
-void			set_start(t_game *filler)
-{
-	int		y;
-	int		index_x;
-	int		index_o;
-
-	y = 0;
-	index_o = -1;
-	index_x = -1;
-	while (y < filler->board.tall)
-	{
-		index_o = (index_o < 0 ? ft_strchri(filler->board.data[y], 'O') : -1);
-		index_x = (index_x < 0 ? ft_strchri(filler->board.data[y], 'X') : -1);
-		if (index_o >= 0)
-			set_players(filler, y, index_o, 0);
-		else if (index_x >= 0)
-			set_players(filler, y, index_x, 1);
-		y++;
-	}
-	filler->start = 1;
 }
 
 /*
@@ -129,4 +68,57 @@ void			set_max(t_token *token, int type, int mode)
 		}
 		x++;
 	}
+}
+
+/*
+**	for each block filled by either player, assigns x,y value to
+**	t_point pointer at an increasing index, which totals max spots taken
+**	by either player stored in me/you count.
+*/
+
+void			whose_blocks(t_game *filler)
+{
+	t_point	point;
+
+	filler->me_count = 0;
+	filler->you_count = 0;
+	point.y = 0;
+	while (point.y < filler->board.tall)
+	{
+		point.x = 0;
+		while (point.x < filler->board.wide)
+		{
+			if (filler->board.data[point.y][point.x] == filler->me_id)
+				filler->me_blocks[filler->me_count++] = point;
+			else if (filler->board.data[point.y][point.x] == filler->you_id)
+				filler->you_blocks[filler->you_count++] = point;
+			point.x++;
+		}
+		point.y++;
+	}
+	set_max(&filler->piece, 0, 0);
+	set_max(&filler->piece, 0, 1);
+	set_max(&filler->board, (int)filler->me_id, 0);
+	set_max(&filler->board, (int)filler->me_id, 1);
+}
+
+/*
+**	allocate for total blocks in board a pointer to t_point for both players.
+*/
+
+void			set_blocks(t_game *filler)
+{
+	int		size;
+
+	if (filler->me_blocks)
+		ft_memdel((void **)&filler->me_blocks);
+	if (filler->you_blocks)
+		ft_memdel((void **)&filler->you_blocks);
+	size = filler->board.size;
+	if (!(filler->me_blocks = ft_memalloc(sizeof(t_point) * size)) ||
+		!(filler->you_blocks = ft_memalloc(sizeof(t_point) * size)))
+		exit(1);
+	ft_bzero(filler->me_blocks, sizeof(t_point) * size);
+	ft_bzero(filler->you_blocks, sizeof(t_point) * size);
+	whose_blocks(filler);
 }
