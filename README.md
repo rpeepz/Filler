@@ -7,8 +7,8 @@ _I'll fill you!_
 ### Table Of Contents
 * [Objective](#objective)
 * [Installation](#installation)
-* [Project Structure](#project-structure)
 * [Usage](#usage)
+* [Project Structure](#project-structure)
 * [Future](#future)
 * [Credits](#sources)
 * [Keep In Touch](#keep-in-touch)
