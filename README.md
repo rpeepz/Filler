@@ -25,8 +25,12 @@ _I'll fill you!_
 <br>
 
 ## Objective  
-This projects goal is to create player for the Filler game.  
-Here is a [video](https://www.youtube.com/watch?v=UcGA-NssVWs "filler video") of the game played by one of the first to attempt this project  
+This project's goal is to create player for the Filler game.  <br>
+
+sample gameplay:  
+![test](https://media.giphy.com/media/ch2OIkngQa2aKbZ5j8/giphy.gif "sample") <br>
+
+click here [<img src="https://i.imgur.com/muGcWVW.png" width="16px" height="16px" title="filler video">](https://www.youtube.com/watch?v=UcGA-NssVWs) for a video of the game played by one of the first to attempt this project  
 
 <br>
 
