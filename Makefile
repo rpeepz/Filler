@@ -6,7 +6,7 @@
 #    By: rpapagna <rpapagna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/01 20:19:37 by rpapagna          #+#    #+#              #
-#    Updated: 2019/11/08 18:20:50 by rpapagna         ###   ########.fr        #
+#    Updated: 2019/11/18 13:20:43 by rpapagna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,8 +51,7 @@ fclean: clean
 
 re: fclean all
 
-$(NAME):$(OBJ)
-		@make -C libft
+$(NAME):$(ARCHIVE) $(OBJ)
 		@gcc $(CFLAGS) $(OBJ_PATH)/*.o $(ARCHIVE) -o $(AUTHOR).$(NAME)
 		@printf "[$(GREEN)$(NAME)$(NC)]\t[$(MAG)OK!$(NC)]\n" #PRINT
 
@@ -61,6 +60,9 @@ $(OBJ_PATH):
 
 $(OBJ_PATH)/%.o: srcs/%.c | $(OBJ_PATH)
 		@gcc $(CFLAGS) $(INCL) -o $@ -c $<
+
+$(ARCHIVE):
+		@make -C libft
 
 1mo:
 		@gcc -Wall -Wextra -g $(addprefix srcs/,$(SRCS)) $(ARCHIVE) -o $(AUTHOR).$(NAME)
