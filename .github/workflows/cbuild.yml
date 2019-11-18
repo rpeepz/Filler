@@ -1,0 +1,23 @@
+name: C/Build
+
+on: [push]
+
+jobs:
+  job_libs:
+    name: libs
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: making libraries
+        run: make libft/libft.a 
+          
+  job_build:
+    name: filler
+    runs-on: macOS-latest
+    needs: [job_libs]
+    steps:
+    - uses: actions/checkout@v1
+    - name: build
+      run: |
+        make
+        make clean
