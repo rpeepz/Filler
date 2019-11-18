@@ -9,8 +9,10 @@ _I'll fill you!_
 * [Installation](#installation)
 * [Usage](#usage)
 * [Project Structure](#project-structure)
+* [Dependencies](#dependencies)
 * [Future](#future)
-* [Credits](#sources)
+* [Subject PDF](#subject-pdf)
+* [Sources](#sources)
 * [Keep In Touch](#keep-in-touch)
 
 #### About 42  
